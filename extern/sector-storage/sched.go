@@ -446,9 +446,11 @@ func (sh *scheduler) trySched() {
 				rpcCtx, cancel := context.WithTimeout(task.ctx, SelectorTimeout)
 				defer cancel()
 
-				// Added by long 20210406
+				// Added by long 20210816
 				if task.taskType == sealtasks.TTAddPiece {
-					return wi.active.p1ParallelNum < wj.active.p1ParallelNum
+					p1i := wi.preparing.apParallelNum + wi.active.apParallelNum + wi.active.p1ParallelNum
+					p1j := wj.preparing.apParallelNum + wj.active.apParallelNum + wj.active.p1ParallelNum
+					return p1i < p1j
 				}
 
 				r, err := task.sel.Cmp(rpcCtx, task.taskType, wi, wj)
