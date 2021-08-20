@@ -45,8 +45,9 @@ type WorkerStats struct {
 	GpuUsed    bool   // nolint
 	CpuUse     uint64 // nolint
 
-	P1ParallelNum uint64 // Added by long 20210318
-	P1ParallelMax uint64 // Added by long 20210404
+	// Added by long 20210318
+	P1ParallelNum uint64
+	P1ParallelMax uint64
 }
 
 const (

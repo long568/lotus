@@ -15,7 +15,7 @@ const (
 	TTUnseal TaskType = "seal/v0/unseal"
 )
 
-// Modified by long 20210604
+// Taged by long 20210604
 var order = map[TaskType]int{
 	TTAddPiece:   6, // least priority
 	TTPreCommit1: 5,
