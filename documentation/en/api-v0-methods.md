@@ -158,6 +158,8 @@
   * [StateDealProviderCollateralBounds](#StateDealProviderCollateralBounds)
   * [StateDecodeParams](#StateDecodeParams)
   * [StateGetActor](#StateGetActor)
+  * [StateGetRandomnessFromBeacon](#StateGetRandomnessFromBeacon)
+  * [StateGetRandomnessFromTickets](#StateGetRandomnessFromTickets)
   * [StateGetReceipt](#StateGetReceipt)
   * [StateListActors](#StateListActors)
   * [StateListMessages](#StateListMessages)
@@ -1467,6 +1469,7 @@ Inputs:
       "/": "bafy2bzacea3wsdh6y3a36tb3skempjoxqpuyompjbmfeyf34fi3uy6uue42v4"
     },
     "Piece": null,
+    "DatamodelPathSelector": "Links/21/Hash/Links/42/Hash",
     "Size": 42,
     "FromLocalCAR": "string value",
     "Total": "0",
@@ -1521,6 +1524,7 @@ Inputs:
       "/": "bafy2bzacea3wsdh6y3a36tb3skempjoxqpuyompjbmfeyf34fi3uy6uue42v4"
     },
     "Piece": null,
+    "DatamodelPathSelector": "Links/21/Hash/Links/42/Hash",
     "Size": 42,
     "FromLocalCAR": "string value",
     "Total": "0",
@@ -3907,6 +3911,56 @@ Response:
 }
 ```
 
+### StateGetRandomnessFromBeacon
+StateGetRandomnessFromBeacon is used to sample the beacon for randomness.
+
+
+Perms: read
+
+Inputs:
+```json
+[
+  2,
+  10101,
+  "Ynl0ZSBhcnJheQ==",
+  [
+    {
+      "/": "bafy2bzacea3wsdh6y3a36tb3skempjoxqpuyompjbmfeyf34fi3uy6uue42v4"
+    },
+    {
+      "/": "bafy2bzacebp3shtrn43k7g3unredz7fxn4gj533d3o43tqn2p2ipxxhrvchve"
+    }
+  ]
+]
+```
+
+Response: `null`
+
+### StateGetRandomnessFromTickets
+StateGetRandomnessFromTickets is used to sample the chain for randomness.
+
+
+Perms: read
+
+Inputs:
+```json
+[
+  2,
+  10101,
+  "Ynl0ZSBhcnJheQ==",
+  [
+    {
+      "/": "bafy2bzacea3wsdh6y3a36tb3skempjoxqpuyompjbmfeyf34fi3uy6uue42v4"
+    },
+    {
+      "/": "bafy2bzacebp3shtrn43k7g3unredz7fxn4gj533d3o43tqn2p2ipxxhrvchve"
+    }
+  ]
+]
+```
+
+Response: `null`
+
 ### StateGetReceipt
 StateGetReceipt returns the message receipt for the given message or for a
 matching gas-repriced replacing message
@@ -4644,7 +4698,7 @@ Inputs:
 ]
 ```
 
-Response: `13`
+Response: `14`
 
 ### StateReadState
 StateReadState returns the indicated actor's state.

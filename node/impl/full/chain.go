@@ -10,7 +10,6 @@ import (
 	"strings"
 	"sync"
 
-	"github.com/filecoin-project/lotus/build"
 	"github.com/filecoin-project/lotus/chain/stmgr"
 
 	"go.uber.org/fx"
@@ -30,7 +29,6 @@ import (
 
 	"github.com/filecoin-project/go-address"
 	"github.com/filecoin-project/go-state-types/abi"
-	"github.com/filecoin-project/go-state-types/crypto"
 	"github.com/filecoin-project/specs-actors/actors/util/adt"
 
 	"github.com/filecoin-project/lotus/api"
@@ -53,6 +51,7 @@ type ChainModuleAPI interface {
 	ChainGetTipSetByHeight(ctx context.Context, h abi.ChainEpoch, tsk types.TipSetKey) (*types.TipSet, error)
 	ChainGetTipSetAfterHeight(ctx context.Context, h abi.ChainEpoch, tsk types.TipSetKey) (*types.TipSet, error)
 	ChainReadObj(context.Context, cid.Cid) ([]byte, error)
+	ChainGetPath(ctx context.Context, from, to types.TipSetKey) ([]*api.HeadChange, error)
 }
 
 var _ ChainModuleAPI = *new(api.FullNode)
@@ -99,40 +98,16 @@ func (m *ChainModule) ChainHead(context.Context) (*types.TipSet, error) {
 	return m.Chain.GetHeaviestTipSet(), nil
 }
 
-func (a *ChainAPI) ChainGetRandomnessFromTickets(ctx context.Context, tsk types.TipSetKey, personalization crypto.DomainSeparationTag, randEpoch abi.ChainEpoch, entropy []byte) (abi.Randomness, error) {
-	pts, err := a.Chain.LoadTipSet(tsk)
-	if err != nil {
-		return nil, xerrors.Errorf("loading tipset key: %w", err)
-	}
-
-	// Doing this here is slightly nicer than doing it in the chainstore directly, but it's still bad for ChainAPI to reason about network upgrades
-	if randEpoch > build.UpgradeHyperdriveHeight {
-		return a.Chain.GetChainRandomnessLookingForward(ctx, pts.Cids(), personalization, randEpoch, entropy)
-	}
-
-	return a.Chain.GetChainRandomnessLookingBack(ctx, pts.Cids(), personalization, randEpoch, entropy)
-}
-
-func (a *ChainAPI) ChainGetRandomnessFromBeacon(ctx context.Context, tsk types.TipSetKey, personalization crypto.DomainSeparationTag, randEpoch abi.ChainEpoch, entropy []byte) (abi.Randomness, error) {
-	pts, err := a.Chain.LoadTipSet(tsk)
-	if err != nil {
-		return nil, xerrors.Errorf("loading tipset key: %w", err)
-	}
-
-	// Doing this here is slightly nicer than doing it in the chainstore directly, but it's still bad for ChainAPI to reason about network upgrades
-	if randEpoch > build.UpgradeHyperdriveHeight {
-		return a.Chain.GetBeaconRandomnessLookingForward(ctx, pts.Cids(), personalization, randEpoch, entropy)
-	}
-
-	return a.Chain.GetBeaconRandomnessLookingBack(ctx, pts.Cids(), personalization, randEpoch, entropy)
-}
-
 func (a *ChainAPI) ChainGetBlock(ctx context.Context, msg cid.Cid) (*types.BlockHeader, error) {
 	return a.Chain.GetBlock(msg)
 }
 
 func (m *ChainModule) ChainGetTipSet(ctx context.Context, key types.TipSetKey) (*types.TipSet, error) {
 	return m.Chain.LoadTipSet(key)
+}
+
+func (m *ChainModule) ChainGetPath(ctx context.Context, from, to types.TipSetKey) ([]*api.HeadChange, error) {
+	return m.Chain.GetPath(ctx, from, to)
 }
 
 func (m *ChainModule) ChainGetBlockMessages(ctx context.Context, msg cid.Cid) (*api.BlockMessages, error) {
